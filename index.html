@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instruments de Chirurgie</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #FF6B6B; --c2: #4ECDC4; --c3: #FFE66D; --c4: #A8E6CF;
+    --c5: #FF8B94; --c6: #7B68EE; --c7: #FFA07A; --c8: #98D8C8;
+    --dark: #1a1a2e; --card-bg: #ffffff; --text: #2d2d2d;
+    --radius: 20px; --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Nunito',sans-serif; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; color:var(--text); }
+  
+  /* NAV */
+  nav { background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); padding:1rem 2rem; display:flex; align-items:center; gap:1rem; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,0.2); }
+  .nav-logo { font-family:'Fredoka One',cursive; font-size:1.6rem; color:#fff; cursor:pointer; }
+  .nav-logo span { color:var(--c3); }
+  .breadcrumb { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
+  .breadcrumb-item { color:rgba(255,255,255,0.8); font-size:0.85rem; cursor:pointer; transition:color 0.2s; }
+  .breadcrumb-item:hover { color:#fff; }
+  .breadcrumb-sep { color:rgba(255,255,255,0.4); }
+  .breadcrumb-item.active { color:var(--c3); font-weight:700; cursor:default; }
+  .nav-tabs { display:flex; gap:0.5rem; margin-left:auto; }
+  .nav-tab { background:rgba(255,255,255,0.2); border:none; color:#fff; padding:0.5rem 1rem; border-radius:50px; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; transition:all 0.2s; }
+  .nav-tab:hover, .nav-tab.active { background:#fff; color:var(--dark); }
+
+  /* PAGES */
+  .page { display:none; padding:2rem; max-width:1100px; margin:0 auto; }
+  .page.active { display:block; }
+
+  /* HOME */
+  .hero { text-align:center; padding:3rem 1rem 2rem; }
+  .hero h1 { font-family:'Fredoka One',cursive; font-size:3.5rem; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,0.3); margin-bottom:0.5rem; }
+  .hero h1 span { color:var(--c3); }
+  .hero p { color:rgba(255,255,255,0.9); font-size:1.1rem; max-width:600px; margin:0 auto 1rem; line-height:1.6; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.2); color:#fff; padding:0.4rem 1rem; border-radius:50px; font-size:0.85rem; font-weight:700; border:1px solid rgba(255,255,255,0.3); }
+
+  .section-intro { background:rgba(255,255,255,0.95); border-radius:var(--radius); padding:1.5rem 2rem; margin-bottom:2rem; box-shadow:var(--shadow); }
+  .section-intro h2 { font-family:'Fredoka One',cursive; color:var(--dark); margin-bottom:0.5rem; font-size:1.4rem; }
+  .section-intro p { color:#555; line-height:1.6; }
+
+  .families-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+  .family-card { background:white; border-radius:var(--radius); padding:2rem 1.5rem; cursor:pointer; transition:all 0.3s; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .family-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; }
+  .family-card:nth-child(1)::before { background:linear-gradient(90deg,var(--c1),var(--c5)); }
+  .family-card:nth-child(2)::before { background:linear-gradient(90deg,var(--c2),var(--c8)); }
+  .family-card:nth-child(3)::before { background:linear-gradient(90deg,var(--c3),var(--c7)); }
+  .family-card:nth-child(4)::before { background:linear-gradient(90deg,var(--c6),#B8A9FA); }
+  .family-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(0,0,0,0.2); }
+  .family-icon { font-size:3.5rem; margin-bottom:1rem; display:block; }
+  .family-card h3 { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); margin-bottom:0.5rem; }
+  .family-card p { color:#666; font-size:0.9rem; line-height:1.5; margin-bottom:1rem; }
+  .family-count { display:inline-block; background:#f0f0f0; padding:0.3rem 0.8rem; border-radius:50px; font-size:0.8rem; font-weight:700; color:#888; margin-bottom:0.8rem; }
+  .family-btn { display:inline-flex; align-items:center; gap:0.5rem; background:var(--dark); color:#fff; border:none; padding:0.6rem 1.2rem; border-radius:50px; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.9rem; transition:all 0.2s; }
+  .family-btn:hover { background:#333; transform:scale(1.05); }
+
+  /* FAMILY PAGE */
+  .page-header { background:white; border-radius:var(--radius); padding:2rem; margin-bottom:1.5rem; box-shadow:var(--shadow); }
+  .page-header h1 { font-family:'Fredoka One',cursive; font-size:2.2rem; color:var(--dark); margin-bottom:0.3rem; }
+  .page-header .tag { display:inline-block; padding:0.3rem 0.8rem; border-radius:50px; font-size:0.8rem; font-weight:700; margin-bottom:0.8rem; }
+  .tag-red { background:#FFE8E8; color:#c0392b; }
+  .tag-teal { background:#E0F5F5; color:#16a085; }
+  .tag-yellow { background:#FFF8E0; color:#d35400; }
+  .tag-purple { background:#EEE8FF; color:#6c3483; }
+  .info-box { background:#f8f9ff; border-left:4px solid #6c3483; border-radius:0 12px 12px 0; padding:1rem 1.2rem; margin:0.8rem 0; }
+  .info-box h4 { font-weight:800; color:#6c3483; margin-bottom:0.4rem; font-size:0.9rem; }
+  .info-box p, .info-box li { color:#555; font-size:0.88rem; line-height:1.6; }
+  .info-box ul { padding-left:1.2rem; }
+
+  .subcats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .subcat-card { background:white; border-radius:16px; padding:1.5rem; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 16px rgba(0,0,0,0.08); border:2px solid transparent; }
+  .subcat-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.15); border-color:rgba(108,52,131,0.3); }
+  .subcat-card .icon { font-size:2.5rem; margin-bottom:0.8rem; }
+  .subcat-card h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--dark); margin-bottom:0.4rem; }
+  .subcat-card p { color:#888; font-size:0.82rem; }
+  .subcat-card .count-badge { display:inline-block; background:#f0f0f0; color:#666; padding:0.2rem 0.6rem; border-radius:50px; font-size:0.75rem; font-weight:700; margin-top:0.5rem; }
+
+  /* INSTRUMENTS LIST */
+  .instruments-list { display:grid; gap:1rem; }
+  .instrument-card { background:white; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:all 0.3s; }
+  .instrument-card:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.15); }
+  .instrument-header { display:flex; align-items:center; gap:1rem; padding:1.2rem 1.5rem; }
+  .instrument-icon-wrap { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; }
+  .instrument-header h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--dark); flex:1; }
+  .instrument-header .chevron { color:#ccc; font-size:1.2rem; transition:transform 0.3s; }
+  .instrument-body { display:none; padding:0 1.5rem 1.5rem; }
+  .instrument-body.open { display:block; }
+  .instrument-card.open .chevron { transform:rotate(90deg); }
+  .instrument-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+  @media(max-width:600px){ .instrument-grid { grid-template-columns:1fr; } }
+  .info-chip { background:#f5f5f5; border-radius:12px; padding:1rem; }
+  .info-chip h4 { font-size:0.78rem; font-weight:800; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+  .info-chip p { color:#444; font-size:0.88rem; line-height:1.5; }
+  .verify-box { background:#FFF3E0; border-radius:12px; padding:1rem; margin-top:0.8rem; }
+  .verify-box h4 { color:#e67e22; font-size:0.78rem; font-weight:800; text-transform:uppercase; margin-bottom:0.5rem; }
+  .verify-box li { color:#7d3c00; font-size:0.85rem; line-height:1.7; }
+  .photo-placeholder { background:linear-gradient(135deg,#f5f5f5,#e0e0e0); border-radius:12px; height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; color:#aaa; font-size:0.8rem; font-weight:700; margin-top:0.8rem; }
+  .photo-placeholder span { font-size:2.5rem; }
+
+  /* JEUX */
+  .games-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+  .game-card { background:white; border-radius:var(--radius); padding:2rem; cursor:pointer; transition:all 0.3s; box-shadow:var(--shadow); text-align:center; }
+  .game-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,0,0,0.2); }
+  .game-card .game-icon { font-size:3rem; margin-bottom:1rem; }
+  .game-card h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--dark); margin-bottom:0.5rem; }
+  .game-card p { color:#777; font-size:0.88rem; line-height:1.5; margin-bottom:1.2rem; }
+  .game-btn { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; border:none; padding:0.6rem 1.5rem; border-radius:50px; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; transition:all 0.2s; font-size:0.9rem; }
+  .game-btn:hover { transform:scale(1.05); opacity:0.9; }
+  .difficulty { display:inline-block; padding:0.2rem 0.7rem; border-radius:50px; font-size:0.75rem; font-weight:800; margin-bottom:0.8rem; }
+  .easy { background:#E8F8E8; color:#27ae60; }
+  .medium { background:#FFF3CD; color:#e67e22; }
+  .hard { background:#FFE8E8; color:#e74c3c; }
+
+  /* GAME AREA */
+  .game-area { background:white; border-radius:var(--radius); padding:2rem; box-shadow:var(--shadow); }
+  .game-title-bar { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:2px dashed #f0f0f0; }
+  .game-title-bar h2 { font-family:'Fredoka One',cursive; font-size:1.6rem; color:var(--dark); }
+  .score-badge { background:linear-gradient(135deg,#FFE66D,#FFA07A); padding:0.4rem 1rem; border-radius:50px; font-weight:800; color:#333; font-size:0.9rem; margin-left:auto; }
+  .progress-bar { background:#f0f0f0; border-radius:50px; height:10px; margin-bottom:1.5rem; overflow:hidden; }
+  .progress-fill { background:linear-gradient(90deg,#667eea,#764ba2); height:100%; border-radius:50px; transition:width 0.5s; }
+
+  /* TEXTE A TROU */
+  .fill-sentence { font-size:1.1rem; line-height:2.2; color:#333; background:#f8f9ff; border-radius:16px; padding:1.5rem; margin-bottom:1.5rem; }
+  .blank { display:inline-block; min-width:120px; border-bottom:3px solid #764ba2; padding:0.2rem 0.5rem; margin:0 0.3rem; background:rgba(118,75,162,0.08); border-radius:8px; cursor:pointer; transition:all 0.2s; text-align:center; font-weight:800; color:transparent; }
+  .blank.filled { color:#764ba2; }
+  .blank.correct { color:#27ae60; border-color:#27ae60; background:rgba(39,174,96,0.1); }
+  .blank.wrong { color:#e74c3c; border-color:#e74c3c; background:rgba(231,76,60,0.1); animation:shake 0.3s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  .word-bank { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; }
+  .word-chip { background:white; border:2px solid #764ba2; color:#764ba2; padding:0.4rem 0.9rem; border-radius:50px; font-weight:800; cursor:pointer; transition:all 0.2s; font-size:0.9rem; }
+  .word-chip:hover { background:#764ba2; color:white; }
+  .word-chip.used { opacity:0.3; pointer-events:none; }
+
+  /* FLASH CARDS */
+  .flashcard-container { perspective:1000px; margin-bottom:1.5rem; }
+  .flashcard { width:100%; height:260px; position:relative; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.4,0,0.2,1); cursor:pointer; border-radius:var(--radius); }
+  .flashcard.flipped { transform:rotateY(180deg); }
+  .card-face { position:absolute; inset:0; border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; backface-visibility:hidden; box-shadow:var(--shadow); }
+  .card-front { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+  .card-back { background:linear-gradient(135deg,#f5f5f5,#e8e8e8); color:var(--dark); transform:rotateY(180deg); }
+  .card-face .card-label { font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; opacity:0.7; margin-bottom:0.8rem; }
+  .card-face .card-main { font-family:'Fredoka One',cursive; font-size:1.8rem; text-align:center; line-height:1.3; }
+  .card-face .card-sub { font-size:0.88rem; opacity:0.8; margin-top:0.8rem; text-align:center; line-height:1.5; }
+  .card-hint { font-size:0.78rem; color:#aaa; text-align:center; margin-bottom:1rem; }
+  .fc-controls { display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; }
+  .fc-btn { padding:0.6rem 1.2rem; border-radius:50px; border:2px solid; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+  .fc-btn.know { border-color:#27ae60; color:#27ae60; background:transparent; }
+  .fc-btn.know:hover { background:#27ae60; color:#fff; }
+  .fc-btn.dunno { border-color:#e74c3c; color:#e74c3c; background:transparent; }
+  .fc-btn.dunno:hover { background:#e74c3c; color:#fff; }
+  .fc-btn.next { border-color:#764ba2; color:#764ba2; background:transparent; }
+  .fc-btn.next:hover { background:#764ba2; color:#fff; }
+
+  /* QCM */
+  .qcm-question { font-size:1.15rem; font-weight:700; color:var(--dark); background:#f8f9ff; border-radius:16px; padding:1.5rem; margin-bottom:1.2rem; line-height:1.5; }
+  .qcm-options { display:grid; gap:0.7rem; margin-bottom:1.5rem; }
+  .qcm-option { background:#f5f5f5; border:2px solid #e0e0e0; border-radius:14px; padding:0.9rem 1.2rem; cursor:pointer; transition:all 0.2s; font-weight:600; font-size:0.95rem; display:flex; align-items:center; gap:0.8rem; }
+  .qcm-option:hover:not(.disabled) { background:#f0e8ff; border-color:#764ba2; color:#764ba2; }
+  .qcm-option.correct { background:#E8F8E8; border-color:#27ae60; color:#27ae60; }
+  .qcm-option.wrong { background:#FFE8E8; border-color:#e74c3c; color:#e74c3c; }
+  .qcm-option.disabled { pointer-events:none; }
+  .option-letter { width:28px; height:28px; border-radius:50%; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; }
+  .qcm-option.correct .option-letter { background:#27ae60; color:#fff; }
+  .qcm-option.wrong .option-letter { background:#e74c3c; color:#fff; }
+  .qcm-feedback { border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; font-weight:700; font-size:0.9rem; }
+  .qcm-feedback.ok { background:#E8F8E8; color:#27ae60; }
+  .qcm-feedback.ko { background:#FFE8E8; color:#e74c3c; }
+
+  /* MÉMORY */
+  .memory-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; margin-bottom:1.5rem; }
+  .mem-card { aspect-ratio:1; border-radius:14px; cursor:pointer; perspective:600px; }
+  .mem-inner { width:100%; height:100%; transform-style:preserve-3d; transition:transform 0.4s; position:relative; }
+  .mem-card.flipped .mem-inner { transform:rotateY(180deg); }
+  .mem-front, .mem-back { position:absolute; inset:0; border-radius:14px; display:flex; align-items:center; justify-content:center; backface-visibility:hidden; font-size:0.75rem; font-weight:700; text-align:center; padding:0.5rem; line-height:1.3; }
+  .mem-front { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; font-size:1.8rem; }
+  .mem-back { background:white; border:2px solid #764ba2; color:#333; transform:rotateY(180deg); }
+  .mem-card.matched .mem-front, .mem-card.matched .mem-back { background:linear-gradient(135deg,#a8e6cf,#4ecdc4); border-color:#4ecdc4; }
+
+  /* RESULT */
+  .result-screen { text-align:center; padding:2rem; }
+  .result-screen .big-emoji { font-size:5rem; margin-bottom:1rem; }
+  .result-screen h2 { font-family:'Fredoka One',cursive; font-size:2.2rem; color:var(--dark); margin-bottom:0.5rem; }
+  .result-screen p { color:#666; margin-bottom:1.5rem; }
+  .result-score { font-size:3rem; font-weight:900; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .action-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 1.5rem; border-radius:50px; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; border:none; font-size:0.95rem; transition:all 0.2s; margin:0.3rem; }
+  .action-btn.primary { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+  .action-btn.secondary { background:#f0f0f0; color:#444; }
+  .action-btn:hover { transform:scale(1.05); }
+
+  /* UTILS */
+  .back-btn { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:0.5rem 1rem; border-radius:50px; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; margin-bottom:1rem; transition:all 0.2s; }
+  .back-btn:hover { background:rgba(255,255,255,0.35); }
+  .empty-state { text-align:center; padding:3rem; color:rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="goHome()">🏥 <span>ChirurgiePro</span></div>
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('cours')">📚 Cours</button>
+    <button class="nav-tab" onclick="showSection('jeux')">🎮 Jeux</button>
+  </div>
+</nav>
+
+<!-- ===== COURS ===== -->
+<div id="section-cours">
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>Instruments de <span>Chirurgie</span> 🔬</h1>
+    <p>Explore le monde fascinant de la chirurgie ! Découvre les instruments utilisés au bloc opératoire et deviens un·e pro de l'instrumentation.</p>
+    <span class="hero-badge">✨ Pour les futurs pros de la santé</span>
+  </div>
+  <div class="section-intro">
+    <h2>🏥 Qu'est-ce qu'un instrument chirurgical ?</h2>
+    <p>Les instruments chirurgicaux sont des outils spécialement conçus pour réaliser des actes opératoires sur le corps humain. Ils sont fabriqués principalement en acier inoxydable pour assurer leur stérilisation. Chaque instrument a une fonction précise et un nom souvent lié à son inventeur ou à sa forme. L'infirmier·e de bloc opératoire (IBODE) doit parfaitement les connaître pour préparer et sécuriser chaque intervention.</p>
+  </div>
+  <div class="families-grid" id="families-grid"></div>
+</div>
+
+<!-- FAMILY PAGE -->
+<div id="page-family" class="page">
+  <div id="family-content"></div>
+</div>
+
+<!-- SUBCAT PAGE -->
+<div id="page-subcat" class="page">
+  <div id="subcat-content"></div>
+</div>
+
+</div><!-- end cours -->
+
+<!-- ===== JEUX ===== -->
+<div id="section-jeux" style="display:none;">
+<div class="page active">
+  <div class="hero">
+    <h1>Zone de <span>Jeux</span> 🎮</h1>
+    <p>Apprends en t'amusant ! Teste tes connaissances sur les instruments chirurgicaux avec des jeux variés.</p>
+  </div>
+  <div id="game-menu">
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-icon">✍️</div>
+        <span class="difficulty easy">Facile</span>
+        <h3>Texte à trous</h3>
+        <p>Complète les phrases en glissant les bons mots au bon endroit. Parfait pour mémoriser les fonctions !</p>
+        <button class="game-btn" onclick="startGame('fill')">Jouer →</button>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🃏</div>
+        <span class="difficulty medium">Moyen</span>
+        <h3>Flash Cards</h3>
+        <p>Instrument face visible, retourne la carte pour découvrir sa description et sa fonction. Méthode ultra-efficace !</p>
+        <button class="game-btn" onclick="startGame('flash')">Jouer →</button>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">❓</div>
+        <span class="difficulty medium">Moyen</span>
+        <h3>QCM Express</h3>
+        <p>4 propositions, 1 bonne réponse. Réponds le plus vite possible pour maximiser ton score !</p>
+        <button class="game-btn" onclick="startGame('qcm')">Jouer →</button>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🧩</div>
+        <span class="difficulty hard">Difficile</span>
+        <h3>Jeu de Mémoire</h3>
+        <p>Retrouve les paires instrument / fonction. Un classique qui booste la mémoire visuelle !</p>
+        <button class="game-btn" onclick="startGame('memory')">Jouer →</button>
+      </div>
+    </div>
+  </div>
+  <div id="game-area" style="display:none;"></div>
+</div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const DATA = {
+  families: [
+    {
+      id:'tranchants', name:'Les Instruments Tranchants', icon:'✂️',
+      color:'#FF6B6B', tag:'tag-red',
+      desc:'Les instruments tranchants sont utilisés pour inciser, sectionner, découper les tissus. Ils permettent l\'ouverture des plans anatomiques lors d\'une intervention.',
+      verify:['Vérifier le tranchant des lames (test du papier ou visuel)', 'Absence d\'ébréchures, bavures ou rouille sur le fil', 'Propreté et stérilisation correcte', 'Bon état des articulations et des vis de blocage', 'Correspondance manche/lame pour les bistouris'],
+      subcats:[
+        {
+          id:'bistouris', name:'Les Bistouris', icon:'🔪', count:3,
+          desc:'Le bistouri est l\'instrument tranchant par excellence du chirurgien. Il sert à inciser les tissus cutanés et profonds.',
+          instruments:[
+            { name:'Sonde cannelée', fonction:'Guide le bistouri lors de l\'incision le long d\'une structure tubulaire (canal, trajet fistuleux). Protège les tissus voisins.', desc:'Tige métallique rigide avec une rainure longitudinale sur sa face supérieure. L\'extrémité est olivaire (arrondie) pour être atraumatique. Elle s\'introduit dans un orifice naturel ou artificiel.', verif:['Vérifier l\'absence de déformation de la rainure', 'Extrémité olivaire non tordue', 'Surface lisse sans ébarbures'] },
+            { name:'Manche à bistouri n°7', fonction:'Supporte la lame de bistouri pour réaliser des incisions fines et précises en chirurgie profonde ou de petite taille.', desc:'Manche fin et allongé, adapté aux lames de petit calibre (n°10, 11, 12, 15). Sa forme effilée améliore la prise en main pour les gestes délicats (chirurgie ORL, plastique, ophtalmologie).', verif:['Vérifier l\'encliquetage sécurisé de la lame', 'Absence de fissure ou déformation du manche', 'Surface antidérapante en bon état'] },
+            { name:'Manches à bistouri n°3 et n°4', fonction:'Support standard pour les lames de bistouri lors des incisions chirurgicales courantes. Le n°4 est plus robuste pour les tissus plus résistants.', desc:'Le manche n°3 (fin) accepte les lames 10, 11, 12, 15. Le manche n°4 (large) accepte les lames 20, 21, 22, 23. Leur forme hexagonale anti-rotation assure une bonne prise en main.', verif:['Vérifier l\'intégrité du système d\'encliquetage', 'Contrôler la stabilité de la lame une fois montée', 'Pas de jeu axial ou latéral de la lame'] },
+          ]
+        },
+        {
+          id:'ciseaux', name:'Les Ciseaux', icon:'✂️', count:8,
+          desc:'Les ciseaux chirurgicaux servent à couper les tissus, disséquer les plans anatomiques, sectionner les fils de suture. Ils se distinguent par leur forme et leur utilisation.',
+          instruments:[
+            { name:'Ciseaux à bandages Lister', fonction:'Sectionner les pansements, bandages et sparadraps sans risquer de blesser le patient.', desc:'Ciseaux à lame inférieure mousse et aplatie recourbée à angle droit à son extrémité. Cette forme permet de glisser sous le bandage en toute sécurité. Taille variable (14 à 23 cm).', verif:['Vérifier le bon fonctionnement de l\'angle de la lame inférieure', 'Tranchant des deux lames', 'Pas de jeu latéral des branches'] },
+            { name:'Ciseaux à dissection Mayo', fonction:'Dissection et section des tissus épais et résistants (fascias, muscles, aponévroses).', desc:'Ciseaux robustes à lames larges, droites ou courbes. Pointes mousses/mousses pour protéger les tissus voisins. Longueur standard 14-17 cm. Parmi les plus utilisés au bloc.', verif:['Vérifier la coupe franche sans déchirure', 'Articulation fluide sans frottement', 'Tranchant uniforme sur toute la lame'] },
+            { name:'Ciseaux dauphin', fonction:'Couper les fils de suture avec précision grâce à leur pointe fine et recourbée.', desc:'Petits ciseaux à pointe fine et légèrement incurvée (« en bec de dauphin »). Idéaux pour couper les fils en profondeur dans des espaces restreints.', verif:['Vérifier la finesse et la symétrie de la pointe', 'Pas d\'ébréchure sur le tranchant distal', 'Fermeture nette et précise'] },
+            { name:'Ciseaux de chirurgie pointu/pointu', fonction:'Section précise des tissus cutanés et sous-cutanés. Les deux pointes acérées permettent des incisions nettes.', desc:'Ciseaux standards à deux pointes acérées. Utilisés en chirurgie superficielle, plastique et dermatologique. Droits ou courbes selon le besoin.', verif:['Contrôler la symétrie et la finesse des deux pointes', 'Tranchant sur la totalité des lames', 'Bon alignement des lames en fermeture'] },
+            { name:'Ciseaux Iris fin', fonction:'Dissection et section des tissus très fins et délicats (chirurgie ophtalmique, plastique, microchirurgie).', desc:'Petits ciseaux (9-11 cm) à lames très fines et légères. Pointes pointues/pointues ou pointu/mousse. Conçus pour une précision maximale dans les tissus fragiles.', verif:['Vérifier l\'extrême finesse des pointes sans dommage', 'Coupe nette même sur un seul fil', 'Aucune irrégularité de la surface des lames'] },
+            { name:'Ciseaux Iris fin Super-Cut', fonction:'Même usage que les Iris fins mais avec une lame super-tranchante (microdentelée) pour couper sans écraser les tissus fragiles.', desc:'Identiques aux Iris fins mais avec au moins une lame à microdents invisibles à l\'œil nu. Reconnaissables à leur anneau doré. Offrent une coupe encore plus précise sur les tissus fins.', verif:['Identifier la lame Super-Cut (anneau doré)', 'Ne jamais l\'utiliser sur autre chose que des tissus fins', 'Vérifier que la micro-dentelure n\'est pas émoussée'] },
+            { name:'Ciseaux Metzembaum', fonction:'Dissection fine et précise des tissus lâches et délicats (péritoine, plèvre, espaces de glissement).', desc:'Ciseaux à lames longues et fines, légèrement incurvées, avec des pointes mousses. Manche court par rapport aux lames. Dédiés à la dissection élective et non à la section de fils.', verif:['Vérifier la légèreté et la fluidité de l\'articulation', 'Lames exemptes de torsion ou gauchissement', 'Pointes mousses intactes, non aplaties'] },
+            { name:'Ciseaux mousse', fonction:'Dissection des tissus fragiles autour de structures nobles (vaisseaux, nerfs) sans risque de blessure.', desc:'Ciseaux à deux pointes mousses/mousses (bouton/bouton). La forme mousse protège les structures adjacentes. Utilisés pour disséquer en toute sécurité.', verif:['Vérifier l\'intégrité des deux extrémités mousses', 'Aucune aspérité sur les pointes', 'Bon glissement des lames'] },
+          ]
+        },
+        { id:'burins', name:'Burins / Ostéotomes', icon:'🔨', count:2, desc:'Instruments destinés à couper, tailler et sculpter les structures osseuses lors des interventions orthopédiques ou crânio-faciales.', instruments:[
+          { name:'Burin droit', fonction:'Sectionner et sculpter le tissu osseux lors d\'interventions orthopédiques ou neurochirurgicales.', desc:'Tige métallique à extrémité biseautée tranchante, utilisé avec un maillet. Sa section peut être rectiligne ou incurvée selon le besoin.', verif:['Vérifier le tranchant du biseau (pas d\'ébréchure)', 'Manche solide sans fissure', 'Absence de déformation de la tige'] },
+          { name:'Ostéotome', fonction:'Couper ou fracturer l\'os de façon contrôlée, notamment en chirurgie maxillo-faciale et orthopédique.', desc:'Similaire au burin mais avec le biseau des deux côtés (double biseauté). Permet une coupe plus précise et moins traumatisante de l\'os.', verif:['Vérifier le biseau symétrique et aiguisé', 'Contrôler l\'intégrité du manche', 'Pas de fissure ni microfêlure sur la lame'] },
+        ]},
+        { id:'pincescoupantes', name:'Pinces Coupantes', icon:'🗜️', count:2, desc:'Pinces dont l\'action de coupe se fait par un mâchoire tranchante. Utilisées pour couper fils, broches et agrafes.', instruments:[
+          { name:'Pince gouge', fonction:'Prélever des fragments osseux ou cartilagineux lors d\'une arthroscopie ou d\'une intervention orthopédique.', desc:'Pince dont les mors en forme de cuillère emboîtables permettent d\'exciser et de prélever du tissu osseux ou cartilagineux de façon précise.', verif:['Vérifier le bon emboîtement des mors cuillères', 'Tranchant des bords des mors', 'Mécanisme de fermeture fluide'] },
+          { name:'Pince coupante à fil (coupe-fil)', fonction:'Sectionner fils métalliques, broches de Kirschner ou fils de suture épais en fin d\'intervention.', desc:'Pince robuste à mors tranchants en V. La géométrie des mors concentre la force de coupe sur un point précis pour couper net sans déformer le fil.', verif:['Vérifier le tranchant des mors', 'Absence d\'ébréchures sur le fil de coupe', 'Bon alignement des mors en fermeture'] },
+        ]},
+      ]
+    },
+    {
+      id:'prehension', name:'Les Instruments de Préhension', icon:'🤏',
+      color:'#4ECDC4', tag:'tag-teal',
+      desc:'Les instruments de préhension permettent de saisir, tenir, comprimer les tissus, vaisseaux et organes. Ils constituent la famille la plus nombreuse.',
+      verify:['Vérifier l\'alignement parfait des mors en fermeture', 'Contrôler le crantage (crémaillère) : doit s\'engager et se libérer facilement', 'Absence de corrosion sur les mors et le corps', 'Vérifier que les dents (s\'il y en a) s\'emboîtent parfaitement', 'Articulation fluide sans point dur ni jeu excessif', 'Contrôler l\'absence de déformation des branches'],
+      subcats:[
+        {
+          id:'hemosta', name:'Pinces Hémostatiques', icon:'🩸', count:16,
+          desc:'Les pinces hémostatiques servent à clamper les vaisseaux sanguins pour arrêter le saignement (hémostase). Elles peuvent aussi tenir des tissus pendant l\'intervention.',
+          instruments:[
+            { name:'Pince Allis', fonction:'Saisir et tenir les tissus à forte résistance (fascias, muscles, intestins) sans les déchirer grâce à ses dents délicates.', desc:'Pince à mors larges avec une rangée de fines dents entrelacées à l\'extrémité. Les anneaux de la crémaillère permettent plusieurs niveaux de serrage.', verif:['Vérifier l\'interdigitation parfaite des dents', 'Contrôler que les dents ne se cassent pas (fragiles)', 'Fonctionnement de la crémaillère'] },
+            { name:'Pince Babcock', fonction:'Saisir les organes creux (intestin, trompe, appendice) de façon atraumatique sans perforer leur paroi.', desc:'Pince à mors en forme d\'ovale (anse fenêtrée) sans dents. La forme permet d\'enserrer un organe tubulaire sans le blesser. Souvent utilisée en chirurgie digestive et gynécologique.', verif:['Vérifier l\'intégrité de l\'anse (pas de fissure)', 'Surface des mors lisse et sans aspérité', 'Fermeture douce et progressive'] },
+            { name:'Pince Chéron', fonction:'Saisir les mèches de compresses, faire passer des drains ou tenir les champs opératoires.', desc:'Grande pince à anneaux (25 à 30 cm) à mors plats finement striés, sans dents. Souvent appelée "pince de préhension de compresse".', verif:['Vérifier les stries des mors (adhérence)', 'Longueur suffisante adaptée au champ opératoire', 'Crémaillère fonctionnelle'] },
+            { name:'Pince Collin', fonction:'Préhension et traction des viscères abdominaux (intestin, estomac) lors de chirurgie abdominale.', desc:'Pince longue (20-25 cm) à mors fenêtrés longitudinalement et striés transversalement. La fenêtre centrale réduit l\'effet de compression sur les tissus.', verif:['Vérifier la planéité des mors', 'Contrôler l\'absence de corrosion dans la fenêtre', 'Mécanisme de crantage souple'] },
+            { name:'Pince Jean-Louis Faure', fonction:'Hémostase et préhension en chirurgie gynécologique (clampage des ligaments, pédicules vasculaires).', desc:'Pince hémostatique longue et courbe, à mors striés sans dents. Spécifique de la chirurgie pelvienne et gynécologique pour atteindre les structures profondes.', verif:['Vérifier la courbure symétrique des branches', 'Stries des mors bien marquées', 'Crémaillère avec au moins 3 crans'] },
+            { name:'Pince Kelly droite', fonction:'Hémostase des vaisseaux de moyen calibre et dissection par technique d\'écartement.', desc:'Pince hémostatique droite à mors striés sur la moitié distale uniquement. Taille intermédiaire (14-16 cm). L\'une des plus polyvalentes du bloc opératoire.', verif:['Vérifier l\'alignement des mors en fermeture', 'Stries sur la moitié distale bien définies', 'Crémaillère à 3 crans minimum'] },
+            { name:'Pince Kocher droite', fonction:'Hémostase solide des pédicules vasculaires et des tissus épais grâce à ses dents de préhension puissantes.', desc:'Pince hémostatique à mors striés avec une dent à l\'extrémité (1×2 ou 2×3 dents). La dent assure une prise ferme mais peut traumatiser les tissus délicats.', verif:['Vérifier l\'emboîtement des dents de l\'extrémité', 'Stries bien présentes sur toute la longueur des mors', 'Fermeture nette avec verrouillage de la crémaillère'] },
+            { name:'Pince Longuette (pince de pansement)', fonction:'Tenir les compresses, appliquer les antiseptiques, retirer les mèches et nettoyer les plaies.', desc:'Grande pince (25-30 cm) à mors plats et strié, sans crémaillère (pince à ressort). Parfois appelée "pince de Forester". Indispensable en salle de soins et au bloc.', verif:['Vérifier le rappel du ressort (retour en position ouverte)', 'Planéité et propreté des mors', 'Absence de déformation du corps'] },
+            { name:'Pince Ombredanne', fonction:'Hémostase et préhension des pédicules vasculaires en chirurgie pédiatrique ou dans les espaces confinés.', desc:'Pince hémostatique courbe de petite taille, à mors fins et striés. Sa courbure et sa petite taille la rendent idéale pour les interventions pédiatriques ou en profondeur.', verif:['Vérifier la symétrie de la courbure', 'Mors fins intacts', 'Crémaillère avec micro-crans adaptés'] },
+            { name:'Pince Péan Murphy', fonction:'Hémostase des vaisseaux de moyen calibre. L\'une des pinces de référence du bloc opératoire.', desc:'Pince hémostatique à mors striés longitudinalement, sans dents. Droite ou courbe (26 à 30 cm). Souvent désignée simplement "Péan". Extrêmement polyvalente.', verif:['Vérifier l\'alignement parfait des mors', 'Stries bien définies sur toute la surface', 'Crémaillère à plusieurs crans fonctionnelle'] },
+            { name:'Pince Rochester Péan', fonction:'Hémostase et préhension de tissus épais ou de pédicules vasculaires importants.', desc:'Version plus longue et plus robuste de la pince Péan (16-26 cm). Mors striés transversalement. Indiquée pour les chirurgies nécessitant une force de serrage plus importante.', verif:['Vérifier la robustesse des branches', 'Stries transversales bien marquées', 'Verrouillage solide de la crémaillère'] },
+            { name:'Pince Terrier', fonction:'Hémostase et préhension en chirurgie digestive, notamment pour les pédicules mésentériques.', desc:'Pince droite à mors striés finement, sans dents. Sa construction solide la rend adaptée aux tissus à forte vascularisation.', verif:['Vérifier stries des mors', 'Fermeture symétrique', 'Crémaillère fonctionnelle'] },
+            { name:'Pince Christophe', fonction:'Fermeture temporaire et atraumatique de structures tubulaires (intestin, trachée) pour éviter toute contamination lors d\'anastomoses.', desc:'Pince à mors larges gainés de caoutchouc ou plastique souple. Ce gainage protège la paroi viscérale de tout traumatisme lors du clampage.', verif:['Vérifier l\'intégrité et la propreté du gainage', 'Pas de fissure dans le matériau souple', 'Fermeture douce et uniforme sur toute la longueur des mors'] },
+            { name:'Pince en cœur', fonction:'Saisir et tenir les structures anatomiques de façon douce, notamment en chirurgie cardiaque ou vasculaire.', desc:'Pince à mors en forme de cœur fenêtré. La forme particulière distribue la pression uniformément et protège les parois fragiles.', verif:['Vérifier l\'intégrité de la fenêtre en cœur', 'Surface des mors lisse', 'Fermeture progressive et douce'] },
+            { name:'Pince Halstead Mosquito', fonction:'Hémostase des tout petits vaisseaux et capillaires. C\'est la plus fine et délicate des pinces hémostatiques.', desc:'Minuscule pince hémostatique (12 cm) à mors fins striés sur toute leur longueur. Droite ou courbe. Reconnue par sa petite taille caractéristique.', verif:['Vérifier la finesse et l\'alignement des mors', 'Stries présentes sur toute la longueur', 'Crémaillère micro-crantée fonctionnelle'] },
+            { name:'Pince Leriche', fonction:'Hémostase des vaisseaux de moyen calibre avec une prise ferme grâce aux dents de l\'extrémité.', desc:'Pince hémostatique à mors striés avec une griffe/dent à l\'extrémité de chaque branche. Similaire à la Kocher mais avec une construction légèrement différente.', verif:['Vérifier l\'emboîtement des griffes d\'extrémité', 'Stries régulières sur les mors', 'Crémaillère bien engagée'] },
+          ]
+        },
+        {
+          id:'clamps', name:'Les Clamps', icon:'🔧', count:4,
+          desc:'Les clamps sont des pinces à serrage fort permettant d\'occlure temporairement des structures anatomiques creuses (vaisseaux, intestins, cordon ombilical).',
+          instruments:[
+            { name:'Clamp Ombilical de Bar', fonction:'Sectionner et clamper le cordon ombilical lors de l\'accouchement de façon sécurisée.', desc:'Pince à mors plats larges et striés, avec un mécanisme de verrouillage robuste. Sa conception particulière permet à la fois de clamper et de couper le cordon ombilical.', verif:['Vérifier le mécanisme de verrouillage/sécurité', 'Planéité et intégrité des mors', 'Fonctionnement du système de coupe intégré'] },
+            { name:'Pince Bengola', fonction:'Occlusion vasculaire temporaire en chirurgie thoracique et cardiovasculaire.', desc:'Pince à mors recourbés en S avec un garnissage protecteur souple. Permet un clampage atraumatique des vaisseaux de gros calibre.', verif:['Vérifier l\'intégrité du revêtement souple des mors', 'Courbure symétrique en S', 'Verrouillage de la crémaillère solide'] },
+            { name:'Dissecteur O\'Shaugnessey', fonction:'Contourner un vaisseau ou une structure tubulaire par tunnélisation pour y passer un fil de ligature.', desc:'Tige courbe en forme de crochet fermé à bout mousse. Permet de créer un chemin autour d\'une structure anatomique sans la blesser pour y passer un fil ou un drain.', verif:['Vérifier la courbure du crochet (non déformée)', 'Extrémité mousse intacte (pas d\'aspérité)', 'Surface lisse pour faciliter le passage'] },
+            { name:'Dissecteur Passe-Fil Finochietto', fonction:'Faire passer un fil de suture ou de ligature autour d\'une structure profonde inaccessible directement aux doigts.', desc:'Instrument en forme de grand crochet évidé à l\'extrémité, permettant d\'y loger un fil et de le tirer autour d\'une structure anatomique en profondeur.', verif:['Vérifier le crochet d\'entraînement du fil (pas de bavure)', 'Surface lisse sur le trajet du fil', 'Rigidité de la tige (pas de flexion involontaire)'] },
+          ]
+        },
+      ]
+    },
+    {
+      id:'ecarteurs', name:'Les Écarteurs', icon:'↔️',
+      color:'#FFE66D', tag:'tag-yellow',
+      desc:'Les écarteurs maintiennent les berges de la plaie, les organes et les parois écartés pour exposer le champ opératoire et donner de la visibilité au chirurgien.',
+      verify:['Vérifier l\'absence de déformation des valves (courbure modifiée)', 'Contrôler les bords : pas de bavures tranchantes pouvant blesser les tissus', 'Surface lisse et sans corrosion', 'Vis et mécanismes de blocage fonctionnels pour les écarteurs statiques', 'Solidité de l\'articulation pour les écarteurs articulés', 'Taille et forme adaptées au type d\'intervention prévue'],
+      subcats:[
+        {
+          id:'manuels', name:'Écarteurs Manuels', icon:'🖐️', count:6,
+          desc:'Les écarteurs manuels nécessitent la présence d\'un aide opératoire pour être maintenus en place pendant toute la durée de l\'intervention.',
+          instruments:[
+            { name:'Écarteur de Farabeuf', fonction:'Écarter les berges d\'une plaie superficielle ou les plans anatomiques pour exposer le site opératoire. C\'est l\'écarteur le plus universel.', desc:'Petite lame métallique recourbée à double extrémité (deux courbures différentes). Peut s\'utiliser des deux côtés. Disponible en différentes tailles.', verif:['Vérifier l\'absence d\'ébarbures sur les bords de la lame', 'Contrôler que les extrémités sont doucement arrondies', 'Pas de déformation de la courbure'] },
+            { name:'Écarteur de Hartmann', fonction:'Écarter les tissus mous en profondeur (muscles, graisse) lors d\'interventions cervicales, ORL ou abdominales.', desc:'Écarteur en forme de râteau avec plusieurs dents mousses ou aiguës selon le modèle. Les dents s\'accrochent dans les tissus pour un maintien efficace.', verif:['Vérifier l\'intégrité de toutes les dents (pas de dent cassée)', 'Dents régulièrement espacées', 'Manche non déformé'] },
+            { name:'Écarteur double fin Senn Miller', fonction:'Écarter délicatement les tissus fins en chirurgie plastique, maxillo-faciale ou ORL.', desc:'Écarteur double extrémité : un côté a trois dents effilées et l\'autre côté est une palette lisse recourbée. Très léger et précis pour les petites interventions.', verif:['Vérifier les 3 dents (toutes présentes et non tordues)', 'Palette lisse sans déformation', 'Légèreté et rectitude de la tige centrale'] },
+            { name:'Valve sus-pubienne', fonction:'Maintenir la paroi abdominale soulevée lors d\'une laparotomie pour accéder à la cavité pelvienne.', desc:'Grande valve plate incurvée montée sur une longue tige. Sa large surface de contact répartit la pression sur la paroi abdominale. Spécifique des chirurgies pelviennes.', verif:['Vérifier l\'absence de déformation de la valve plate', 'Bords de la valve exempts de bavures', 'Solidité de l\'articulation tige/valve'] },
+            { name:'Crochets à peau de Gillies', fonction:'Maintenir les berges cutanées lors des sutures superficielles sans écraser les tissus.', desc:'Petit crochet fin à pointe acérée. Permet de saisir et soulever délicatement le bord cutané pour faciliter la suture. Utilisé en paire.', verif:['Vérifier la finesse et la rectitude de la pointe', 'Pas d\'aspérité sur le crochet', 'Manche ergonomique non déformé'] },
+            { name:'Valves vaginales Doyen', fonction:'Écarter les parois vaginales pour exposer le col de l\'utérus lors d\'une intervention gynécologique.', desc:'Valve large et recourbée en forme de cuillère creuse, spécialement conformée à l\'anatomie vaginale. Se présente généralement en jeu de deux valves complémentaires.', verif:['Vérifier l\'absence d\'aspérité sur la concavité de la valve', 'Bords lisses et arrondis', 'Manche solide solidement lié à la valve'] },
+          ]
+        },
+        {
+          id:'statiques', name:'Écarteurs Statiques', icon:'🔩', count:4,
+          desc:'Les écarteurs statiques (auto-statiques) maintiennent l\'écartement par un mécanisme propre, sans aide opératoire, libérant les mains pour d\'autres tâches.',
+          instruments:[
+            { name:'Écarteur de Beckmann', fonction:'Écarter les parois crâniennes ou cervicales en neurochirurgie ou chirurgie ORL avec un maintien autonome.', desc:'Écarteur autostatique à deux bras articulés portant des crochets ou valves. Un système à vis ou cliquet règle et maintient l\'ouverture. Utilisé en chirurgie de petite ouverture.', verif:['Vérifier le mécanisme de blocage à vis', 'Mobilité des bras articulés', 'Intégrité des crochets/valves'] },
+            { name:'Écarteur de Gosset', fonction:'Maintenir ouverte une laparotomie abdominale sans aide pendant toute l\'intervention.', desc:'Grand écarteur autostatique en forme d\'anneau ou cadre métallique avec des branches extensibles portant des valves interchangeables. Le mécanisme à crémaillère maintient l\'écartement.', verif:['Vérifier le mécanisme de crémaillère (engagement et dégagement)', 'Solidité du cadre central', 'Bon état des valves amovibles (pas de déformation)'] },
+            { name:'Spéculum de Collin', fonction:'Écarter les parois du vagin pour exposer le col utérin lors d\'un examen gynécologique ou d\'une intervention.', desc:'Spéculum bivalve à deux valves s\'ouvrant par un mécanisme à vis. Les deux valves s\'écartent l\'une de l\'autre en maintenant leur position grâce à la vis de réglage.', verif:['Vérifier le mécanisme de vis (serrage et desserrage)', 'Extrémités des valves sans aspérité', 'Ouverture et fermeture symétrique'] },
+            { name:'Spéculum de Cusco', fonction:'Visualiser le col utérin et le vagin lors d\'un examen gynécologique standard. Très utilisé en consultation.', desc:'Spéculum bivalve à deux valves s\'ouvrant en bec de canard. L\'écartement est maintenu par une crémaillère latérale. Le plus utilisé en pratique gynécologique courante.', verif:['Vérifier le mécanisme de crémaillère latérale', 'Bords des valves lisses', 'Articulation fluide sans point dur'] },
+          ]
+        },
+      ]
+    },
+    {
+      id:'suture', name:'Les Instruments de Suture', icon:'🪡',
+      color:'#7B68EE', tag:'tag-purple',
+      desc:'Les instruments de suture permettent de refermer les plans anatomiques en fin d\'intervention et de maintenir en place les champs opératoires stériles.',
+      verify:['Vérifier l\'alignement des mors (pas de décalage latéral)', 'Contrôler les inserts en carbure de tungstène (sur les porte-aiguilles) : pas de fissure', 'Fonctionnement de la crémaillère : doit se bloquer et se libérer avec précision', 'Vérifier que les dents des pinces à griffes sont intactes et acérées', 'Surface des mors lisse pour les pinces anatomiques', 'Aucune trace de rouille ou d\'oxydation'],
+      subcats:[
+        {
+          id:'porteaig', name:'Porte-Aiguilles', icon:'🧵', count:4,
+          desc:'Les porte-aiguilles permettent de saisir et de guider l\'aiguille lors des sutures. Ils ont des mors striés (souvent renforcés au carbure de tungstène) pour maintenir fermement l\'aiguille.',
+          instruments:[
+            { name:'Porte-aiguille Crile Wood', fonction:'Saisir et guider l\'aiguille de suture lors des fermetures de plan en chirurgie générale.', desc:'Porte-aiguille de taille standard (15-18 cm) à mors courts et robustes, striés croisés. Adaptable à de nombreux types d\'aiguilles. Manche en ciseau classique.', verif:['Vérifier le croisement des stries des mors', 'Pas de jeu de l\'aiguille une fois saisie', 'Crémaillère à 3 crans minimum'] },
+            { name:'Porte-aiguille Halsey', fonction:'Saisir les aiguilles fines lors de sutures délicates en chirurgie plastique ou vasculaire.', desc:'Porte-aiguille fin et léger à petits mors courts. Plus adapté aux petites aiguilles courbes en chirurgie de précision. Longueur 15-16 cm.', verif:['Vérifier la finesse des mors (adaptés aux petites aiguilles)', 'Serrage ferme sans glissement de l\'aiguille', 'Légèreté de l\'instrument'] },
+            { name:'Porte-aiguille Mayo-Hégar Tungstène fin', fonction:'Sutures fines et précises nécessitant un porte-aiguille léger avec un maintien optimal de l\'aiguille grâce au carbure de tungstène.', desc:'Porte-aiguille léger avec mors en carbure de tungstène (reconnaissable à l\'anneau doré). Les mors en tungstène sont 3 fois plus durs que l\'acier, assurant une durée de vie prolongée et un meilleur grip.', verif:['Identifier l\'anneau doré (insert tungstène)', 'Vérifier l\'absence de fissure de l\'insert', 'Grip de l\'aiguille parfait sans rotation'] },
+            { name:'Porte-aiguille Mayo-Hégar', fonction:'Porte-aiguille standard pour toutes chirurgies générales. Le plus utilisé au bloc opératoire.', desc:'Porte-aiguille robuste de conception classique, mors striés croisés, disponible en de nombreuses longueurs (14-20 cm). Conçu pour tenir toutes tailles d\'aiguilles chirurgicales courantes.', verif:['Vérifier les stries croisées des mors', 'Crémaillère solide et précise', 'Bon équilibre général de l\'instrument'] },
+          ]
+        },
+        {
+          id:'dissection', name:'Pinces à Dissection', icon:'🥢', count:11,
+          desc:'Les pinces à dissection permettent de saisir et manipuler les tissus lors des sutures, dissections et pansements. Certaines ont des dents (griffes) pour une meilleure prise, d\'autres sont lisses pour protéger les tissus fragiles.',
+          instruments:[
+            { name:'Pince à champ de Jones', fonction:'Fixer les champs opératoires stériles entre eux et sur le patient pour maintenir le champ stérile.', desc:'Pince à mors recourbés vers le bas avec des griffes croisées, sans crémaillère (maintien par ressort). Utilisée en paires ou groupes pour "pincer" les draps entre eux.', verif:['Vérifier l\'alignement et le croisement des griffes', 'Force du ressort (retour en position fermée)', 'Pas de dent cassée ou manquante'] },
+            { name:'Pince à dissection Clovis Vincent', fonction:'Saisir les tissus nerveux ou cérébraux de façon ultra-délicate en neurochirurgie.', desc:'Pince extrêmement fine et légère, à mors longs et effilés avec une très légère striation. Conçue spécifiquement pour la neurochirurgie et la microchirurgie.', verif:['Vérifier la finesse extrême des mors', 'Aucune bavure ou aspérité', 'Parallélisme parfait des branches en position ouverte'] },
+            { name:'Pince Adson avec griffes', fonction:'Saisir le derme et les tissus cutanés lors de sutures superficielles. Les griffes permettent une prise ferme sans écraser.', desc:'Pince courte (12 cm) à extrémité effilée portant 1×2 dents entrelacées. La prise en main est typiquement entre pouce et index (style stylo ou "piano").', verif:['Vérifier l\'interdigitation des griffes', 'Mors fins non tordus', 'Résistance du ressort'] },
+            { name:'Pince Adson Brown', fonction:'Saisir les tissus cutanés résistants avec une prise encore plus solide grâce à ses nombreuses dents.', desc:'Comme l\'Adson avec griffes mais avec 9×9 dents (peigne). Idéale pour les tissus fermes (aponévrose, cuir chevelu). La prise est puissante et stable.', verif:['Vérifier l\'intégrité du peigne de dents (9×9)', 'Interdigitation parfaite et symétrique', 'Aucune dent manquante ou brisée'] },
+            { name:'Pince Adson sans griffe', fonction:'Manipuler les tissus fragiles (vaisseaux, nerfs, muqueuses) sans risque de perforation.', desc:'Identique à l\'Adson avec griffes mais mors plats finement striés sans dents. La surface striée assure une prise sans traumatisme.', verif:['Vérifier la planéité et les stries des mors', 'Pas d\'aspérité sur la surface de contact', 'Fermeture douce et précise'] },
+            { name:'Pince Backhaus', fonction:'Fixer les champs opératoires sur la peau du patient avec des pointes perforantes.', desc:'Pince à anneaux et crémaillère avec deux pointes acérées recourbées qui se croisent. Elle pince la peau à travers le champ opératoire pour le maintenir en place.', verif:['Vérifier la symétrie du croisement des pointes', 'Acuité des pointes', 'Crémaillère fonctionnelle (se verrouille bien)'] },
+            { name:'Pince DeBakey', fonction:'Saisir les parois vasculaires de façon atraumatique lors de chirurgie vasculaire ou cardiaque.', desc:'Pince à mors longs avec une multitude de fines dents longitudinales qui permettent une prise ferme sans traumatisme de l\'intima vasculaire. Reconnaissable à ses mors longs et fins.', verif:['Vérifier l\'intégrité de la microdentelure longitudinale', 'Parallélisme des mors', 'Aucune aspérité visible'] },
+            { name:'Pince à tissus', fonction:'Saisir et tenir les tissus mous lors d\'une dissection ou d\'une suture de façon générale.', desc:'Terme générique désignant les pinces à mors striés ou dentés utilisées pour manipuler les tissus. Peut désigner plusieurs modèles selon les établissements.', verif:['Vérifier selon le modèle spécifique utilisé', 'Mors alignés et fonctionnels', 'Crémaillère ou ressort en bon état'] },
+            { name:'Pince anatomique de dissection sans griffes', fonction:'Manipuler délicatement les tissus (intestin, péritoneum, tissus fragiles) sans perforation.', desc:'Pince à mors larges et plats, finement striés en travers, sans dents. La prise est douce et répartie. Standard en chirurgie digestive, gynécologique et thoracique.', verif:['Vérifier les stries transversales des mors', 'Surface de contact sans aspérité', 'Fermeture uniforme des mors'] },
+            { name:'Pince Précelle', fonction:'Tenir et appliquer les petites compresses, mèches ou cotonnettes lors des pansements ou soins de plaies.', desc:'Petite pince à ressort (sans crémaillère) à mors fins et striés. Facile d\'utilisation à une seule main. Indispensable pour les soins infirmiers et les pansements fins.', verif:['Vérifier le rappel du ressort', 'Mors fins et striation présente', 'Pas de déformation du corps de la pince'] },
+            { name:'Stylet porte-coton', fonction:'Appliquer et positionner un coton tige ou une mèche dans une cavité (oreille, nez, cavité sinusienne) lors d\'une intervention ORL.', desc:'Fine tige métallique rigide avec un pas de vis ou une encoche à l\'extrémité permettant de fixer une petite mèche de coton. Utilisé en ORL et en soins de plaies profondes.', verif:['Vérifier l\'intégrité du système de fixation du coton', 'Extrémité sans aspérité pouvant abîmer les muqueuses', 'Rectitude de la tige (non tordue)'] },
+          ]
+        },
+      ]
+    },
+  ]
+};
+
+// ===================== NAVIGATION =====================
+let currentSection = 'cours';
+let currentFamily = null;
+let currentSubcat = null;
+
+function showSection(s) {
+  currentSection = s;
+  document.getElementById('section-cours').style.display = s==='cours' ? '' : 'none';
+  document.getElementById('section-jeux').style.display = s==='jeux' ? '' : 'none';
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{ t.classList.toggle('active',(i===0&&s==='cours')||(i===1&&s==='jeux')); });
+}
+
+function updateBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  let html = '<span class="breadcrumb-item" onclick="goHome()">Accueil</span>';
+  if(currentFamily){
+    html += '<span class="breadcrumb-sep">›</span>';
+    html += `<span class="breadcrumb-item" onclick="goFamily('${currentFamily.id}')">${currentFamily.name}</span>`;
+  }
+  if(currentSubcat){
+    html += '<span class="breadcrumb-sep">›</span>';
+    html += `<span class="breadcrumb-item active">${currentSubcat.name}</span>`;
+  }
+  bc.innerHTML = html;
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  currentFamily = null; currentSubcat = null;
+  updateBreadcrumb();
+  showPage('page-home');
+}
+
+function goFamily(fid) {
+  currentFamily = DATA.families.find(f=>f.id===fid);
+  currentSubcat = null;
+  updateBreadcrumb();
+  renderFamilyPage();
+  showPage('page-family');
+}
+
+function goSubcat(fid, sid) {
+  currentFamily = DATA.families.find(f=>f.id===fid);
+  currentSubcat = currentFamily.subcats.find(s=>s.id===sid);
+  updateBreadcrumb();
+  renderSubcatPage();
+  showPage('page-subcat');
+}
+
+// ===================== RENDER =====================
+function renderHome() {
+  const g = document.getElementById('families-grid');
+  g.innerHTML = DATA.families.map(f=>`
+    <div class="family-card" onclick="goFamily('${f.id}')">
+      <span class="family-icon">${f.icon}</span>
+      <h3>${f.name}</h3>
+      <p>${f.desc.substring(0,100)}…</p>
+      <span class="family-count">${f.subcats.reduce((a,s)=>a+s.instruments.length,0)} instruments</span><br>
+      <button class="family-btn">Explorer →</button>
+    </div>`).join('');
+}
+
+function renderFamilyPage() {
+  const f = currentFamily;
+  const verifyHTML = f.verify.map(v=>`<li>${v}</li>`).join('');
+  const subcatsHTML = f.subcats.map(s=>`
+    <div class="subcat-card" onclick="goSubcat('${f.id}','${s.id}')">
+      <div class="icon">${s.icon}</div>
+      <h3>${s.name}</h3>
+      <p>${s.desc.substring(0,80)}…</p>
+      <span class="count-badge">${s.instruments.length} instruments</span>
+    </div>`).join('');
+  document.getElementById('family-content').innerHTML = `
+    <div class="page-header">
+      <span class="tag ${f.tag}">${f.name}</span>
+      <h1>${f.icon} ${f.name}</h1>
+      <p style="color:#555;line-height:1.6">${f.desc}</p>
+      <div class="info-box" style="margin-top:1rem">
+        <h4>✅ Ce que l'on vérifie dans cette famille</h4>
+        <ul>${verifyHTML}</ul>
+      </div>
+    </div>
+    <h2 style="color:#fff;font-family:'Fredoka One',cursive;margin-bottom:1rem;font-size:1.3rem">📂 Sous-catégories</h2>
+    <div class="subcats-grid">${subcatsHTML}</div>`;
+}
+
+function renderSubcatPage() {
+  const s = currentSubcat;
+  const f = currentFamily;
+  const instHTML = s.instruments.map((ins,i)=>`
+    <div class="instrument-card" id="icard-${i}">
+      <div class="instrument-header" onclick="toggleInstrument(${i})">
+        <div class="instrument-icon-wrap" style="background:${f.color}22">${f.icon}</div>
+        <h3>${ins.name}</h3>
+        <span class="chevron">›</span>
+      </div>
+      <div class="instrument-body" id="ibody-${i}">
+        <div class="instrument-grid">
+          <div class="info-chip"><h4>🎯 Fonction</h4><p>${ins.fonction}</p></div>
+          <div class="info-chip"><h4>📋 Description</h4><p>${ins.desc}</p></div>
+        </div>
+        <div class="verify-box">
+          <h4>⚠️ Points de vérification</h4>
+          <ul>${ins.verif.map(v=>`<li>${v}</li>`).join('')}</ul>
+        </div>
+        <div class="photo-placeholder"><span>📷</span>Photo de l'instrument</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('subcat-content').innerHTML = `
+    <div class="page-header">
+      <span class="tag ${f.tag}">${f.name}</span>
+      <h1>${s.icon} ${s.name}</h1>
+      <p style="color:#555;line-height:1.6">${s.desc}</p>
+    </div>
+    <div class="instruments-list">${instHTML}</div>`;
+}
+
+function toggleInstrument(i) {
+  const body = document.getElementById(`ibody-${i}`);
+  const card = document.getElementById(`icard-${i}`);
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.instrument-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.instrument-card').forEach(c=>c.classList.remove('open'));
+  if(!isOpen){ body.classList.add('open'); card.classList.add('open'); }
+}
+
+// ===================== GAMES =====================
+const allInstruments = DATA.families.flatMap(f=>f.subcats.flatMap(s=>s.instruments.map(ins=>({...ins,family:f.name,subcat:s.name}))));
+
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+// -- FILL GAME --
+const fillQuestions = [
+  { sentence:'La pince {BLANK} est utilisée pour saisir les organes creux de façon atraumatique.', answer:'Babcock', options:['Babcock','Kocher','Allis','Kelly'] },
+  { sentence:'Le {BLANK} est l\'instrument tranchant par excellence du chirurgien.', answer:'bistouri', options:['bistouri','spéculum','écarteur','crochet'] },
+  { sentence:'Les ciseaux {BLANK} sont conçus pour la dissection des tissus épais comme les fascias.', answer:'Mayo', options:['Mayo','Iris','Metzembaum','Lister'] },
+  { sentence:'L\'écarteur de {BLANK} est le plus universel pour écarter les berges d\'une plaie.', answer:'Farabeuf', options:['Farabeuf','Gosset','Beckmann','Hartmann'] },
+  { sentence:'La pince {BLANK} est reconnaissable à son anneau doré indiquant un insert en carbure de tungstène.', answer:'Mayo-Hégar Tungstène', options:['Mayo-Hégar Tungstène','Halsey','Crile Wood','DeBakey'] },
+  { sentence:'La pince {BLANK} permet un clampage atraumatique des parois vasculaires grâce à sa microdentelure.', answer:'DeBakey', options:['DeBakey','Kocher','Allis','Péan'] },
+  { sentence:'Le spéculum de {BLANK} est le plus utilisé en pratique gynécologique courante.', answer:'Cusco', options:['Cusco','Collin','Gosset','Beckmann'] },
+  { sentence:'La pince {BLANK} est la plus fine des pinces hémostatiques, utilisée pour les capillaires.', answer:'Halstead Mosquito', options:['Halstead Mosquito','Leriche','Terrier','Ombredanne'] },
+];
+
+let fillState = {};
+function startGame(type) {
+  document.getElementById('game-menu').style.display='none';
+  document.getElementById('game-area').style.display='block';
+  if(type==='fill') renderFillGame();
+  else if(type==='flash') renderFlashGame();
+  else if(type==='qcm') renderQCMGame();
+  else if(type==='memory') renderMemoryGame();
+}
+
+function backToMenu() {
+  document.getElementById('game-menu').style.display='';
+  document.getElementById('game-area').style.display='none';
+}
+
+function renderFillGame() {
+  fillState = { q:0, score:0, questions:shuffle([...fillQuestions]), selected:null };
+  renderFillQuestion();
+}
+
+function renderFillQuestion() {
+  const { q, questions, score } = fillState;
+  if(q >= questions.length){ showFillResult(); return; }
+  const qq = questions[q];
+  const opts = shuffle([...qq.options]);
+  const sentHTML = qq.sentence.replace('{BLANK}',`<span class="blank" id="blank-target">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`);
+  const wordsHTML = opts.map(o=>`<span class="word-chip" onclick="selectWord('${o}',this)">${o}</span>`).join('');
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area">
+      <div class="game-title-bar">
+        <h2>✍️ Texte à trous</h2>
+        <span class="score-badge">⭐ ${score}/${fillState.questions.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(q/questions.length)*100}%"></div></div>
+      <p style="color:#888;font-size:0.85rem;margin-bottom:0.8rem">Question ${q+1} / ${questions.length} — Clique sur le bon mot puis sur la phrase</p>
+      <div class="fill-sentence">${sentHTML}</div>
+      <p style="font-weight:700;color:#555;margin-bottom:0.5rem">Banque de mots :</p>
+      <div class="word-bank" id="word-bank">${wordsHTML}</div>
+      <button class="action-btn primary" onclick="validateFill()">Valider ✓</button>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+  fillState.selected = null;
+}
+
+function selectWord(word, el) {
+  document.querySelectorAll('.word-chip').forEach(c=>c.style.background='');
+  document.querySelectorAll('.word-chip').forEach(c=>c.style.color='');
+  el.style.background='#764ba2'; el.style.color='#fff';
+  const blank = document.getElementById('blank-target');
+  blank.textContent = word; blank.classList.add('filled');
+  fillState.selected = word;
+}
+
+function validateFill() {
+  if(!fillState.selected) return;
+  const qq = fillState.questions[fillState.q];
+  const blank = document.getElementById('blank-target');
+  const correct = fillState.selected === qq.answer;
+  blank.classList.add(correct?'correct':'wrong');
+  if(correct) fillState.score++;
+  document.querySelectorAll('.word-chip').forEach(c=>c.style.pointerEvents='none');
+  setTimeout(()=>{ fillState.q++; renderFillQuestion(); }, 1200);
+}
+
+function showFillResult() {
+  const pct = Math.round((fillState.score/fillState.questions.length)*100);
+  const emoji = pct>=80?'🏆':pct>=60?'👍':'💪';
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area result-screen">
+      <div class="big-emoji">${emoji}</div>
+      <h2>${pct>=80?'Excellent !':pct>=60?'Bien joué !':'Continue comme ça !'}</h2>
+      <div class="result-score">${fillState.score}/${fillState.questions.length}</div>
+      <p>${pct}% de bonnes réponses</p>
+      <button class="action-btn primary" onclick="renderFillGame()">🔄 Rejouer</button>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+// -- FLASH CARDS --
+let flashState = {};
+function renderFlashGame() {
+  const cards = shuffle(allInstruments.slice(0,20));
+  flashState = { cards, idx:0, known:0, flipped:false };
+  renderFlashCard();
+}
+
+function renderFlashCard() {
+  const { cards, idx, known } = flashState;
+  if(idx >= cards.length){ showFlashResult(); return; }
+  const ins = cards[idx];
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area">
+      <div class="game-title-bar">
+        <h2>🃏 Flash Cards</h2>
+        <span class="score-badge">✅ ${known} connus</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(idx/cards.length)*100}%"></div></div>
+      <p class="card-hint">Clique sur la carte pour révéler la réponse • ${idx+1}/${cards.length}</p>
+      <div class="flashcard-container">
+        <div class="flashcard" id="fc" onclick="flipCard()">
+          <div class="card-face card-front">
+            <span class="card-label">Instrument</span>
+            <span class="card-main">${ins.name}</span>
+            <span class="card-sub">${ins.family} › ${ins.subcat}</span>
+          </div>
+          <div class="card-face card-back">
+            <span class="card-label">Fonction</span>
+            <span class="card-main" style="font-size:1.1rem">${ins.fonction}</span>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="fc-btn dunno" onclick="fcAnswer(false)">❌ À revoir</button>
+        <button class="fc-btn next" onclick="fcAnswer(null)">⏭ Passer</button>
+        <button class="fc-btn know" onclick="fcAnswer(true)">✅ Je sais !</button>
+      </div>
+      <button class="action-btn secondary" style="margin-top:1rem" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+function flipCard() {
+  document.getElementById('fc').classList.toggle('flipped');
+}
+
+function fcAnswer(knew) {
+  if(knew===true) flashState.known++;
+  flashState.idx++;
+  renderFlashCard();
+}
+
+function showFlashResult() {
+  const { known, cards } = flashState;
+  const pct = Math.round((known/cards.length)*100);
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area result-screen">
+      <div class="big-emoji">${pct>=70?'🌟':'📚'}</div>
+      <h2>Flash Cards terminées !</h2>
+      <div class="result-score">${known}/${cards.length}</div>
+      <p>instruments connus (${pct}%)</p>
+      <button class="action-btn primary" onclick="renderFlashGame()">🔄 Recommencer</button>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+// -- QCM --
+const qcmQuestions = [
+  { q:'Quel instrument est utilisé pour guider le bistouri le long d\'une structure tubulaire ?', a:'Sonde cannelée', opts:['Sonde cannelée','Pince Kocher','Écarteur Farabeuf','Porte-aiguille Halsey'] },
+  { q:'Quelle pince est reconnaissable à ses mors en forme d\'anse fenêtrée ovale, utilisée pour les organes creux ?', a:'Pince Babcock', opts:['Pince Babcock','Pince Allis','Pince Kocher','Pince Leriche'] },
+  { q:'Quel écarteur autostatique est utilisé pour maintenir une laparotomie abdominale ouverte ?', a:'Écarteur de Gosset', opts:['Écarteur de Gosset','Écarteur de Farabeuf','Crochets de Gillies','Senn Miller'] },
+  { q:'Quelle est la particularité des ciseaux Mayo par rapport aux ciseaux Metzembaum ?', a:'Ils sont plus robustes pour les tissus épais', opts:['Ils sont plus robustes pour les tissus épais','Ils ont deux pointes aiguës','Ils ont un anneau doré','Ils sont plus petits'] },
+  { q:'Sur quel instrument trouve-t-on généralement un anneau de couleur dorée ?', a:'Porte-aiguille en carbure de tungstène', opts:['Porte-aiguille en carbure de tungstène','Pince Kocher','Ciseaux Lister','Écarteur Beckmann'] },
+  { q:'Quelle pince est indiquée pour fixer les champs opératoires sur la peau du patient ?', a:'Pince Backhaus', opts:['Pince Backhaus','Pince DeBakey','Pince Précelle','Pince de Jones'] },
+  { q:'Quel instrument sert à contourner un vaisseau pour y passer un fil de ligature ?', a:'Dissecteur O\'Shaugnessey', opts:["Dissecteur O'Shaugnessey","Pince Bengola","Valve sus-pubienne","Pince Chéron"] },
+  { q:'La pince Halstead Mosquito est utilisée pour l\'hémostase de :', a:'Capillaires et très petits vaisseaux', opts:['Capillaires et très petits vaisseaux','Pédicules vasculaires importants','Artères de gros calibre','Champs opératoires'] },
+];
+
+let qcmState = {};
+function renderQCMGame() {
+  qcmState = { q:0, score:0, questions:shuffle([...qcmQuestions]), answered:false };
+  renderQCMQuestion();
+}
+
+function renderQCMQuestion() {
+  const { q, questions, score } = qcmState;
+  if(q >= questions.length){ showQCMResult(); return; }
+  const qq = questions[q];
+  const opts = shuffle([...qq.opts]);
+  const letters = ['A','B','C','D'];
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area">
+      <div class="game-title-bar">
+        <h2>❓ QCM Express</h2>
+        <span class="score-badge">⭐ ${score}/${questions.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(q/questions.length)*100}%"></div></div>
+      <div class="qcm-question">Question ${q+1}/${questions.length} : ${qq.q}</div>
+      <div class="qcm-options" id="qcm-opts">
+        ${opts.map((o,i)=>`<div class="qcm-option" onclick="answerQCM('${o.replace(/'/g,"\\'")}','${qq.a.replace(/'/g,"\\'")}',${i})">
+          <span class="option-letter">${letters[i]}</span>${o}</div>`).join('')}
+      </div>
+      <div id="qcm-feedback"></div>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+function answerQCM(chosen, correct, idx) {
+  const opts = document.querySelectorAll('.qcm-option');
+  opts.forEach(o=>o.classList.add('disabled'));
+  opts[idx].classList.add(chosen===correct?'correct':'wrong');
+  if(chosen!==correct){
+    opts.forEach((o,i)=>{ if(o.textContent.trim().substring(1).trim()===correct) o.classList.add('correct'); });
+  }
+  if(chosen===correct) qcmState.score++;
+  const fb = document.getElementById('qcm-feedback');
+  fb.className = 'qcm-feedback '+(chosen===correct?'ok':'ko');
+  fb.textContent = chosen===correct?'✅ Bonne réponse !':'❌ Mauvais, la bonne réponse était : '+correct;
+  setTimeout(()=>{ qcmState.q++; renderQCMQuestion(); }, 1800);
+}
+
+function showQCMResult() {
+  const pct = Math.round((qcmState.score/qcmState.questions.length)*100);
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area result-screen">
+      <div class="big-emoji">${pct>=80?'🏆':pct>=60?'👍':'💪'}</div>
+      <h2>${pct>=80?'Excellent !':pct>=60?'Bien joué !':'Continue !'}</h2>
+      <div class="result-score">${qcmState.score}/${qcmState.questions.length}</div>
+      <p>${pct}% de bonnes réponses</p>
+      <button class="action-btn primary" onclick="renderQCMGame()">🔄 Rejouer</button>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+// -- MEMORY GAME --
+const memPairs = [
+  {term:'Pince Babcock', def:'Organes creux atraumatique'},
+  {term:'Ciseaux Mayo', def:'Dissection tissus épais'},
+  {term:'Écarteur Farabeuf', def:'Écarteur universel berges'},
+  {term:'Pince Kocher', def:'Dents + pédicules vasculaires'},
+  {term:'Spéculum Cusco', def:'Examen gynécologique courant'},
+  {term:'Ciseaux Iris fin', def:'Microchirurgie tissus délicats'},
+  {term:'Porte-aiguille Mayo-Hégar', def:'Suture standard bloc opératoire'},
+  {term:'Pince DeBakey', def:'Chirurgie vasculaire atraumatique'},
+];
+
+let memState = {};
+function renderMemoryGame() {
+  const pairs = shuffle([...memPairs]).slice(0,6);
+  const cards = shuffle([
+    ...pairs.map((p,i)=>({id:i,type:'term',text:p.term,pair:i})),
+    ...pairs.map((p,i)=>({id:i+100,type:'def',text:p.def,pair:i}))
+  ]);
+  memState = { cards, flipped:[], matched:[], moves:0 };
+  renderMemoryBoard();
+}
+
+function renderMemoryBoard() {
+  const { cards } = memState;
+  const cardsHTML = cards.map((c,i)=>`
+    <div class="mem-card" id="mc-${i}" onclick="flipMem(${i})">
+      <div class="mem-inner">
+        <div class="mem-front">🔬</div>
+        <div class="mem-back">${c.text}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area">
+      <div class="game-title-bar">
+        <h2>🧩 Jeu de Mémoire</h2>
+        <span class="score-badge">Essais : <span id="move-count">0</span></span>
+      </div>
+      <p style="color:#666;font-size:0.85rem;margin-bottom:1rem">Retrouve les paires instrument ↔ fonction !</p>
+      <div class="memory-grid">${cardsHTML}</div>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+function flipMem(i) {
+  const { flipped, matched, cards } = memState;
+  if(flipped.length===2 || flipped.includes(i) || matched.includes(cards[i].pair+'-'+cards[i].type) || document.getElementById(`mc-${i}`).classList.contains('matched')) return;
+  document.getElementById(`mc-${i}`).classList.add('flipped');
+  flipped.push(i);
+  if(flipped.length===2){
+    memState.moves++;
+    document.getElementById('move-count').textContent = memState.moves;
+    const [a,b] = [cards[flipped[0]], cards[flipped[1]]];
+    if(a.pair===b.pair && a.type!==b.type){
+      setTimeout(()=>{
+        flipped.forEach(idx=>{ document.getElementById(`mc-${idx}`).classList.add('matched'); });
+        memState.matched.push(a.pair);
+        memState.flipped=[];
+        if(memState.matched.length===6){ setTimeout(showMemResult,600); }
+      },600);
+    } else {
+      setTimeout(()=>{
+        flipped.forEach(idx=>document.getElementById(`mc-${idx}`).classList.remove('flipped'));
+        memState.flipped=[];
+      },1000);
+    }
+  }
+}
+
+function showMemResult() {
+  document.getElementById('game-area').innerHTML = `
+    <div class="game-area result-screen">
+      <div class="big-emoji">🎉</div>
+      <h2>Félicitations !</h2>
+      <p>Tu as trouvé toutes les paires en</p>
+      <div class="result-score">${memState.moves}</div>
+      <p>essais</p>
+      <button class="action-btn primary" onclick="renderMemoryGame()">🔄 Rejouer</button>
+      <button class="action-btn secondary" onclick="backToMenu()">← Menu</button>
+    </div>`;
+}
+
+// ===================== INIT =====================
+renderHome();
+updateBreadcrumb();
+</script>
+</body>
+</html>
